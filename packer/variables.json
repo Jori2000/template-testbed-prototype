@@ -1,0 +1,63 @@
+{
+    "builders": [
+      {
+        "CPUs": 1,
+        "RAM": 1024,
+        "RAM_reserve_all": false,
+        "boot_command": [
+          "<esc> <wait> text ks=http://{{ .HTTPIP }}:{{ .HTTPPort }}/ks.cfg <enter>"
+        ],
+        "boot_wait": "10s",
+        "convert_to_template": true,
+        "datacenter": "{{user `vsphere-datacenter`}}",
+        "datastore": "{{user `vsphere-datastore`}}",
+        "disk_controller_type": "pvscsi",
+        "floppy_files": [
+          "ks.cfg"
+        ],
+        "guest_os_type": "centos7_64Guest",
+        "http_directory": "http",
+        "insecure_connection": "true",
+        "iso_checksum": "{{user `iso-checksum`}}",
+        "iso_url":
+          "{{user `iso_url`}}"
+        ,
+        "network_adapters": [
+          {
+            "network": "{{user `vsphere-network`}}",
+            "network_card": "vmxnet3"
+          }
+        ],
+        "notes": "Build via Packer",
+        "password": "{{user `vsphere-password`}}",
+        "ssh_password": "server",
+        "ssh_username": "root",
+        "storage": [
+          {
+            "disk_size": 25000,
+            "disk_thin_provisioned": true
+          }
+        ],
+        "type": "vsphere-iso",
+        "host": "192.168.0.33",
+        "username": "{{user `vsphere-user`}}",
+        "vcenter_server": "{{user `vsphere-server`}}",
+        "vm_name": "{{user `vm-name`}}"
+      }
+    ],
+    "variables": {
+        "iso-checksum": "sha256:087a5743dc6fd6706d9b961b8147423ddc029451b938364c760d75440eb7be14",
+      "iso_url": "http://ftp.rrzn.uni-hannover.de/centos/7.8.2003/isos/x86_64/CentOS-7-x86_64-DVD-2003.iso",
+      "vm-cpu-num": "1",
+      "vm-disk-size": "25600",
+      "vm-mem-size": "1024",
+      "vm-name": "test3",
+      "host": "192.168.0.33",
+      "vsphere-datacenter": "ha-datacenter",
+      "vsphere-datastore": "datastore1",
+      "vsphere-network": "VM Network",
+      "vsphere-password": "ESXI1000!",
+      "vsphere-server": "192.168.0.33",
+      "vsphere-user": "root"
+    }
+  }
