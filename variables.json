@@ -5,7 +5,7 @@
         "RAM": 1024,
         "RAM_reserve_all": false,
         "boot_command": [
-          "<esc> <wait> text ks=http://{{ .HTTPIP }}:{{ .HTTPPort }}/ks.cfg <enter>"
+          "<tab><bs><bs><bs><bs><bs>text ks=http://{{ .HTTPIP }}:{{ .HTTPPort }}/ks.cfg<enter><wait>" 
         ],
         "boot_wait": "10s",
         "convert_to_template": true,
@@ -13,15 +13,13 @@
         "datastore": "{{user `vsphere-datastore`}}",
         "disk_controller_type": "pvscsi",
         "floppy_files": [
-          "ks.cfg"
+          "./ks.cfg"
         ],
-        "guest_os_type": "centos7_64Guest",
+        "guest_os_type": "centos8_64Guest",
         "http_directory": "http",
         "insecure_connection": "true",
-        "iso_checksum": "{{user `iso-checksum`}}",
-        "iso_url":
-          "{{user `iso_url`}}"
-        ,
+        "iso_checksum": "{{ user `iso_checksum` }}",
+        "iso_url": "{{ user `iso_url` }}",
         "network_adapters": [
           {
             "network": "{{user `vsphere-network`}}",
@@ -39,25 +37,25 @@
           }
         ],
         "type": "vsphere-iso",
-        "host": "192.168.0.33",
+        "host": "localhost.hitronhub.home",
         "username": "{{user `vsphere-user`}}",
         "vcenter_server": "{{user `vsphere-server`}}",
         "vm_name": "{{user `vm-name`}}"
       }
     ],
     "variables": {
-        "iso-checksum": "sha256:087a5743dc6fd6706d9b961b8147423ddc029451b938364c760d75440eb7be14",
-      "iso_url": "http://ftp.rrzn.uni-hannover.de/centos/7.8.2003/isos/x86_64/CentOS-7-x86_64-DVD-2003.iso",
+      "iso_checksum": "c67876a5602faa17f68b40ccf2628799b87454aa67700f0f57eec15c6ccdd98c",
+      "iso_url": "http://miroir.univ-paris13.fr/centos/8/isos/x86_64/CentOS-8.2.2004-x86_64-boot.iso",
       "vm-cpu-num": "1",
       "vm-disk-size": "25600",
       "vm-mem-size": "1024",
       "vm-name": "test3",
-      "host": "192.168.0.33",
+      "host": "localhost.hitronhub.home",
       "vsphere-datacenter": "ha-datacenter",
       "vsphere-datastore": "datastore1",
       "vsphere-network": "VM Network",
       "vsphere-password": "ESXI1000!",
-      "vsphere-server": "192.168.0.33",
+      "vsphere-server": "192.168.0.36",
       "vsphere-user": "root"
     }
   }

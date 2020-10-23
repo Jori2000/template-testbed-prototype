@@ -49,12 +49,6 @@ resource "vsphere_virtual_machine" "test2" {
 
 }
 
-resource "vsphere_file" "ubuntu_disk_upload" {
-  datacenter       = "ha-datacenter"
-  datastore        = "datastore1"
-  source_file      = "${path.module}/iso/CentOS-7-x86_64-DVD-2003.iso"
-  destination_file = "/vmfs/volumes/5f81e5bb-20e6c01a-bd7c-000c29f80fea/iso/CentOS-7-x86_64-DVD-2003.iso"
-}
 
 resource "local_file" "hosts_cfg" {
   content = templatefile("${path.module}/templates/hosts.tpl",
