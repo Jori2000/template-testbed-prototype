@@ -2,6 +2,9 @@
 //read input file
 let fileToRead = "This is the file we should check"
 
+//read config file
+let credentials = "This is the file we should check"
+
 //split input file into several definition files (packer, terraform, ansible)
 let tfDef = fileToRead.split("TF Part")[1];
 let packerDef = fileToRead.split("Packer Part")[1];
@@ -25,7 +28,13 @@ if (output.error){
 } else {
     building = runConsole("cmd packer build packerDef");
 }
+
+// wait for build to end
 /**
- * cmd packer verify packerDef
- * cmd packer build packerDef
+ * nun ist die Frage, der Nutzer definiert ohnehin die Packer File, also kennt er die Namen der Templates. Soll das Weiterleiten der Templatenamen automatisch passieren?
+ * 
  */
+// get path for the templates
+// Finde ich hoffentlich jetzt gleich raus
+
+// run Terraform 
