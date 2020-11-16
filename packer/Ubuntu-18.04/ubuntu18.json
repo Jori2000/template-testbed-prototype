@@ -26,21 +26,19 @@
       "cluster": "{{user `cluster`}}",
       "convert_to_template": "true",
       "datacenter": "{{user `datacenter`}}",
-      "datastore": "{{user `datastore`}}",
+      "datastore": "{{user `vcenter-datastore`}}",
       "disk_controller_type": "pvscsi",
       "floppy_files": [
         "./preseed.cfg"
       ],
       "folder": "{{user `folder`}}",
       "guest_os_type": "ubuntu64Guest",
-      "host": "{{user `host`}}",
       "insecure_connection": "true",
       "iso_checksum": "{{user `iso-checksum-type`}}:{{user `iso-checksum`}}",
       "iso_urls": "{{user `iso-url`}}",
       "network_adapters": [
         {
-          "network": "{{user `network`}}",
-          "network_card": "vmxnet3"
+          "network": "{{user `vcenter-network`}}"
         }
       ],
       "password": "{{user `vcenter-password`}}",
@@ -67,22 +65,21 @@
     }
   ],
   "variables": {
+    "cluster": "cluster-1",
     "iso-checksum": "8c5fc24894394035402f66f3824beb7234b757dd2b5531379cb310cedfdf0996",
     "iso-checksum-type": "sha256",
     "iso-url": "http://cdimage.ubuntu.com/releases/18.04/release/ubuntu-18.04.5-server-amd64.iso",
     "ssh-password": "kopicloud",
     "ssh-username": "kopicloud",
-    "vm-cpu-num": "1",
-    "vm-disk-size": "10240",
-    "vm-mem-size": "1024",
-    "vm-name": "Ubuntu-1804-Template",
     "vcenter-datacenter": "datacenter1",
     "vcenter-datastore": "datastore1",
     "vcenter-network": "VM Network",
     "vcenter-password": "waSSer77!",
     "vcenter-server": "192.168.0.77",
     "vcenter-username": "administrator@vsphere.local",
-    "host": "192.168.0.46"
-
+    "vm-cpu-num": "1",
+    "vm-disk-size": "10240",
+    "vm-mem-size": "1024",
+    "vm-name": "Ubuntu-1804-Template1"
   }
 }

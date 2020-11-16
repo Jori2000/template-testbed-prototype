@@ -9,15 +9,17 @@ provider "vsphere" {
 
 ## Build VM
 data "vsphere_datacenter" "dc" {
-  name = "ha-datacenter"
+  name = "datacenter1"
 }
 
 data "vsphere_datastore" "datastore" {
   name          = "datastore1"
   datacenter_id = data.vsphere_datacenter.dc.id
 }
-
-data "vsphere_resource_pool" "pool" {}
+data "vsphere_compute_cluster" "cluster" {
+    name          = "cluster-1"
+    datacenter_id = data.vsphere_datacenter.dc.id
+}
 
 data "vsphere_network" "mgmt_lan" {
   name          = "VM Network"
@@ -25,19 +27,23 @@ data "vsphere_network" "mgmt_lan" {
 }
 
 data "vsphere_virtual_machine" "template" {
-  name = var.vsphere_virtual_machine_template
+  name = "Ubuntu-1804-Template1"
   datacenter_id = data.vsphere_datacenter.dc.id
+}
+data "vsphere_resource_pool" "pool" {
+name = "cluster-1/Resources/"
+datacenter_id = data.vsphere_datacenter.dc.id
 }
 
 resource "vsphere_virtual_machine" "cloned_virtual_machine" {
   name             = "cloned_virtual_machine"
-  resource_pool_id = data.vsphere_resource_pool.pool.id
-  datastore_id     = data.vsphere_virtual_machine.template.guest_id
+resource_pool_id = data.vsphere_compute_cluster.cluster.resource_pool_id
+ datastore_id     = data.vsphere_virtual_machine.template.guest_id
 
   num_cpus                   = 1
   memory                     = 1024
   wait_for_guest_net_timeout = 0
-  guest_id                   = "ubuntu_64Guest"
+  guest_id                   = "ubuntu64Guest"
   nested_hv_enabled          = true
   network_interface {
     network_id   = data.vsphere_network.mgmt_lan.id

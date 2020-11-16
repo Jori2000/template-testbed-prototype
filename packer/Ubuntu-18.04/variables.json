@@ -1,5 +1,5 @@
 {
-  "vm-name": "Ubuntu-1804-Template",
+  "vm-name": "Ubuntu-1804-Template1",
   "vsphere-datacenter": "datacenter1",
   "vsphere-datastore": "datastore1",
   "vsphere-network": "VM Network",
