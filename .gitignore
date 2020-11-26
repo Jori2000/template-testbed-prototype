@@ -1,2 +1,6 @@
 **/packer_cache
+node_modules
+build/*
 terraform.tfvars
+variables.json
+src/terraform/.terraform/

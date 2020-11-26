@@ -1,0 +1,85 @@
+{
+  "builders": [
+    {
+      "CPUs": "{{user `vm-cpu-num`}}",
+      "RAM": "{{user `vm-mem-size`}}",
+      "RAM_reserve_all": true,
+      "boot_command": [
+        "<enter><wait><f6><wait><esc><wait>",
+        "<bs><bs><bs><bs><bs><bs><bs><bs><bs><bs>",
+        "<bs><bs><bs><bs><bs><bs><bs><bs><bs><bs>",
+        "<bs><bs><bs><bs><bs><bs><bs><bs><bs><bs>",
+        "<bs><bs><bs><bs><bs><bs><bs><bs><bs><bs>",
+        "<bs><bs><bs><bs><bs><bs><bs><bs><bs><bs>",
+        "<bs><bs><bs><bs><bs><bs><bs><bs><bs><bs>",
+        "<bs><bs><bs><bs><bs><bs><bs><bs><bs><bs>",
+        "<bs><bs><bs><bs><bs><bs><bs><bs><bs><bs>",
+        "<bs><bs><bs>",
+        "/install/vmlinuz",
+        " initrd=/install/initrd.gz",
+        " priority=critical",
+        " locale=en_US",
+        " file=/media/preseed.cfg",
+        "<enter>"
+      ],
+      "boot_order": "disk,cdrom",
+      "cluster": "{{user `cluster`}}",
+      "convert_to_template": "true",
+      "datacenter": "{{user `datacenter`}}",
+      "datastore": "{{user `vcenter-datastore`}}",
+      "disk_controller_type": "pvscsi",
+      "floppy_files": [
+        "src/packer/Ubuntu-1804/preseed.cfg"
+      ],
+      "folder": "{{user `folder`}}",
+      "guest_os_type": "ubuntu64Guest",
+      "insecure_connection": "true",
+      "iso_checksum": "{{user `iso-checksum-type`}}:{{user `iso-checksum`}}",
+      "iso_urls": "{{user `iso-url`}}",
+      "network_adapters": [
+        {
+          "network": "{{user `vcenter-network`}}"
+        }
+      ],
+      "password": "{{user `vcenter-password`}}",
+      "ssh_password": "{{user `ssh-password`}}",
+      "ssh_username": "{{user `ssh-username`}}",
+      "storage": [
+        {
+          "disk_size": "{{user `vm-disk-size`}}",
+          "disk_thin_provisioned": true
+        }
+      ],
+      "type": "vsphere-iso",
+      "username": "{{user `vcenter-username`}}",
+      "vcenter_server": "{{user `vcenter-server`}}",
+      "vm_name": "{{user `vm-name`}}"
+    }
+  ],
+  "provisioners": [
+    {
+      "inline": [
+        "echo 'Packer Template Build -- Complete'"
+      ],
+      "type": "shell"
+    }
+  ],
+  "variables": {
+    "cluster": "cluster-1",
+    "iso-checksum": "8c5fc24894394035402f66f3824beb7234b757dd2b5531379cb310cedfdf0996",
+    "iso-checksum-type": "sha256",
+    "iso-url": "http://cdimage.ubuntu.com/releases/18.04/release/ubuntu-18.04.5-server-amd64.iso",
+    "ssh-password": "kopicloud",
+    "ssh-username": "kopicloud",
+    "vcenter-datacenter": "datacenter1",
+    "vcenter-datastore": "datastore1",
+    "vcenter-network": "VM Network",
+    "vcenter-password": "waSSer77!",
+    "vcenter-server": "192.168.0.77",
+    "vcenter-username": "administrator@vsphere.local",
+    "vm-cpu-num": "1",
+    "vm-disk-size": "10240",
+    "vm-mem-size": "1024",
+    "vm-name": "Ubuntu-1804-Template1"
+  }
+}

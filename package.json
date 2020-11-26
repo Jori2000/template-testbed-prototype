@@ -1,0 +1,31 @@
+{
+  "name": "template-testbed-prototype",
+  "version": "1.0.0",
+  "description": "",
+  "main": "pseudocode.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "start:dev": "nodemon",
+    "start": "npm run build && node build/index.js",
+    "build": "rimraf ./build && tsc"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Jori2000/template-testbed-prototype.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/Jori2000/template-testbed-prototype/issues"
+  },
+  "homepage": "https://github.com/Jori2000/template-testbed-prototype#readme",
+  "devDependencies": {
+    "@types/node": "^14.14.9",
+    "nodemon": "^2.0.6",
+    "rimraf": "^3.0.2",
+    "ts-node": "^9.0.0",
+    "typescript": "^4.1.2"
+  },
+  "dependencies": {}
+}
