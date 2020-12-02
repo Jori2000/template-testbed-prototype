@@ -11,6 +11,7 @@ export class TerraformManager {
     setup = (config: any, templates:any): Promise<any> => {
         return new Promise(async (resolve, reject) => {
 
+            let terraformConfig = config;
             // 
             //In Terraform Ordner gehen
 
@@ -42,46 +43,127 @@ export class TerraformManager {
             }
 
             // Variables.tf File erstellen
+            fs.writeFile(`./src/terraform/terraform.tfvars.json`, JSON.stringify(terraformConfig))
 
             // Terraform init
-            exec(`terraform init ./src/terraform`, (error, stdout, stderr) => {
-                // Set new variables.json if there is an error -> corrected file
-                if (error !== null) {
-                    console.log('exec error: ' + error);
-                } else {
-                    if(stdout == ""){
-                        console.log( "✅")
-                    }
-                    console.log('stdout: ' + stdout)
-                    console.log('stderr: ' + stderr);
-                }
-            });
+            console.log("Initialize Terraform")
+            await this.init();
 
             // Terraform plan
-            exec(`terraform plan ./src/terraform`, (error, stdout, stderr) => {
+            console.log("Plan Terraform")
+            await this.plan()
+
+            /**
+             * TODO
+             * make an output.tf or build something that makes this work
+             * 
+             * In Konfig kann man eventuell einfach festlegen, welche Variablen zusätzlich zur IP ausgegeben werden.
+             * Erzeugen der Der Output.TF auf Basis der Eingaben
+             * 
+             */
+            
+            // Terraform apply
+            console.log("Apply Terraform")
+            await this.apply()
+
+            resolve(true);
+        })
+    }
+
+    init = () =>{
+        return new Promise(async (resolve, reject) => {
+            exec(`terraform init`, {cwd: 'src/terraform'}, (error, stdout, stderr) => {
                 // Set new variables.json if there is an error -> corrected file
                 if (error !== null) {
                     console.log('exec error: ' + error);
+                    reject();
                 } else {
                     if(stdout == ""){
                         console.log( "✅")
                     }
                     console.log('stdout: ' + stdout)
                     console.log('stderr: ' + stderr);
+                    resolve(true);
                 }
             });
+        })
+    }
 
-            // Terraform apply
-            exec(`terraform apply ./src/terraform`, (error, stdout, stderr) => {
+    plan = () =>{
+        return new Promise(async (resolve, reject) => {
+            exec(`terraform plan`, {cwd: 'src/terraform'}, (error, stdout, stderr) => {
                 // Set new variables.json if there is an error -> corrected file
                 if (error !== null) {
                     console.log('exec error: ' + error);
+                    reject();
                 } else {
                     if(stdout == ""){
                         console.log( "✅")
                     }
                     console.log('stdout: ' + stdout)
                     console.log('stderr: ' + stderr);
+                    resolve(true);
+                }
+            });
+        })
+    }
+
+    apply = () =>{
+        return new Promise(async (resolve, reject) => {
+            exec(`terraform apply -auto-approve`, {cwd: 'src/terraform'}, (error, stdout, stderr) => {
+                // Set new variables.json if there is an error -> corrected file
+                if (error !== null) {
+                    console.log('exec error: ' + error);
+                    reject();
+                } else {
+                    if(stdout == ""){
+                        console.log( "✅")
+                    }
+                    console.log('stdout: ' + stdout)
+                    console.log('stderr: ' + stderr);
+                    resolve(true);
+                }
+            });
+        })
+    }
+    /**
+     * Destroy Infrastructure
+     */
+    destroy = () =>{
+        return new Promise(async (resolve, reject) => {
+            exec(`terraform destroy -auto-approve`, {cwd: 'src/terraform'}, (error, stdout, stderr) => {
+                // Set new variables.json if there is an error -> corrected file
+                if (error !== null) {
+                    console.log('exec error: ' + error);
+                    reject();
+                } else {
+                    if(stdout == ""){
+                        console.log( "✅")
+                    }
+                    console.log('stdout: ' + stdout)
+                    console.log('stderr: ' + stderr);
+                    resolve(true);
+                }
+            });
+        })
+    }
+    /**
+     * Get IP Address the TF way
+     */
+    getIp = () =>{
+        return new Promise(async (resolve, reject) => {
+            exec(`terraform output ip`, {cwd: 'src/terraform'}, (error, stdout, stderr) => {
+                // Set new variables.json if there is an error -> corrected file
+                if (error !== null) {
+                    console.log('exec error: ' + error);
+                    reject();
+                } else {
+                    if(stdout == ""){
+                        console.log( "✅")
+                    }
+                    console.log('stdout: ' + stdout)
+                    console.log('stderr: ' + stderr);
+                    resolve(true);
                 }
             });
         })

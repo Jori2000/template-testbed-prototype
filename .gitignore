@@ -1,6 +1,8 @@
 **/packer_cache
 node_modules
 build/*
-terraform.tfvars
+terraform.tfvars.json
 variables.json
 src/terraform/.terraform/
+terraform.tfstate.backup
+terraform.tfstate

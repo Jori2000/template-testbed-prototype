@@ -1,3 +1,6 @@
+output "vm" {
+   value = vsphere_virtual_machine.cloned_virtual_machine.*
+}
 output "ip" {
    value = vsphere_virtual_machine.cloned_virtual_machine.*.default_ip_address
 }

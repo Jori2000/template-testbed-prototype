@@ -9,7 +9,7 @@ export class PackerManager {
 
     setup = (config: any): Promise<any> => {
         return new Promise(async (resolve, reject) => {
-            config = JSON.parse(config)
+
 
             //read file names
             let packerFiles = [];
@@ -43,6 +43,7 @@ export class PackerManager {
 
             // Get packer varaiables
             // We might have multiple files, so I should iterate through our config file and find the matching files
+            console.log("getting packerconfig...")
             let packerConfig = config;
             for (let folder of packerFolders) {
                 for (let isoConfig of packerConfig) {
@@ -53,37 +54,64 @@ export class PackerManager {
                 }
             }
             console.log("validating packer files...")
-            for(let definitonFile of definitonFiles){
-                exec(`packer validate ./src/packer/${definitonFile}`, (error, stdout, stderr) => {
-                    // Set new variables.json if there is an error -> corrected file
-                    if (error !== null) {
-                        console.log('exec error: ' + error);
-                    } else {
-                        if(stdout == ""){
-                            console.log(definitonFile + "✅")
-                        }
-                        console.log('stdout: ' + stdout)
-                        console.log('stderr: ' + stderr);
-                    }
-                });
+            for (let definitonFile of definitonFiles) {
+                console.log("->" + definitonFile)
+                await this.validate(definitonFile);
             }
 
-            console.log("building templates...")
-            exec(`packer build ./src/packer/${definitonFiles}`, (error, stdout, stderr) => {
-                console.log('stdout: ' + stdout);
-                // Set new variables.json if there is an error -> corrected file
-                console.log('stderr: ' + stderr);
-                if (error !== null) {
-                    
-                    console.log('exec error: ' + error);
-                    reject(error);
-                } else {
-                    resolve();
-                }
-            });
+            console.log("building template...")
+            let templates = [];
+            for (let definitonFile of definitonFiles) {
+                console.log("->" + definitonFile)
+                templates.push(await this.build(definitonFile));
+            }
+            resolve(templates)
 
 
         })
 
+    }
+
+    validate = (definitonFile: any): Promise<void> => {
+        return new Promise(async (resolve, reject) => {
+            exec(`packer validate ./src/packer/${definitonFile}`, (error, stdout, stderr) => {
+
+                // Set new variables.json if there is an error -> corrected file
+                if (error !== null) {
+                    console.log('exec error1: ' + error);
+                } else {
+                    if (stdout.length == 0) {
+                        console.log(definitonFile + "✅")
+                    } else {
+                        // TODO CORRECT FILE!!!
+
+                        console.log('stdout: ' + stdout.length)
+                        console.log('stderr: ' + stderr);
+                    }
+                    resolve()
+                }
+            });
+        });
+    }
+
+    build = (definitonFile: any): Promise<void> => {
+        return new Promise(async (resolve, reject) => {
+            exec(`packer build ./src/packer/${definitonFile}`, (error, stdout, stderr) => {
+                console.log('stdout: ' + stdout);
+                // Set new variables.json if there is an error -> corrected file
+                console.log('stderr: ' + stderr);
+                if (error !== null) {
+                    if (stdout.includes("already exists,")) {
+                        resolve();
+                    } else {
+                        console.log('exec error: ' + error);
+                        reject(error);
+                    }
+
+                } else {
+                    resolve();
+                }
+            });
+        });
     }
 }

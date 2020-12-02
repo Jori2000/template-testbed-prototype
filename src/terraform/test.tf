@@ -17,8 +17,8 @@ data "vsphere_datastore" "datastore" {
   datacenter_id = data.vsphere_datacenter.dc.id
 }
 data "vsphere_compute_cluster" "cluster" {
-    name          = "cluster-1"
-    datacenter_id = data.vsphere_datacenter.dc.id
+  name          = "cluster-1"
+  datacenter_id = data.vsphere_datacenter.dc.id
 }
 
 data "vsphere_network" "mgmt_lan" {
@@ -27,18 +27,18 @@ data "vsphere_network" "mgmt_lan" {
 }
 
 data "vsphere_virtual_machine" "template" {
-  name = "Ubuntu-1804-Template1"
+  name          = "Ubuntu-1804-Template1"
   datacenter_id = data.vsphere_datacenter.dc.id
 }
 data "vsphere_resource_pool" "pool" {
-name = "cluster-1/Resources/"
-datacenter_id = data.vsphere_datacenter.dc.id
+  name          = "cluster-1/Resources/"
+  datacenter_id = data.vsphere_datacenter.dc.id
 }
 
 resource "vsphere_virtual_machine" "cloned_virtual_machine" {
   name             = "cloned_virtual_machine"
-resource_pool_id = data.vsphere_compute_cluster.cluster.resource_pool_id
- datastore_id     = data.vsphere_datastore.datastore.id
+  resource_pool_id = data.vsphere_compute_cluster.cluster.resource_pool_id
+  datastore_id     = data.vsphere_datastore.datastore.id
 
   num_cpus                   = 1
   memory                     = 1024
@@ -51,7 +51,7 @@ resource_pool_id = data.vsphere_compute_cluster.cluster.resource_pool_id
   }
 
   disk {
-    size = data.vsphere_virtual_machine.template.disks.0.size    
+    size             = data.vsphere_virtual_machine.template.disks.0.size
     label            = "cloned_virtual_machine.vmdk"
     eagerly_scrub    = false
     thin_provisioned = true
