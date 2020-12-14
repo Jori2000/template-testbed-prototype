@@ -19,18 +19,33 @@ export class AnsibleManager {
 
     runPlaybook = (): Promise<any> => {
         return new Promise(async (resolve, reject) => {
+            exec(`ansible-playbook playbook2.yml --ask-become-pass`, {cwd: 'src/terraform/ansible'}, (error, stdout, stderr) => {
+                // Set new variables.json if there is an error -> corrected file
+                if (error !== null) {
+                    console.log('exec error: ' + error);
+                    reject();
+                } else {
+                    if(stdout == ""){
+                        console.log( "✅")
+                    }
+                    console.log('stdout: ' + stdout)
+                    console.log('stderr: ' + stderr);
+                    console.log('exec error: ' + error);
 
-            const child = spawn('ansible-playbook playbook2.yml --ask-become-pass');
+                    resolve(true);
+                }
+            });
+
+            // const child = spawn('ansible-playbook playbook2.yml --ask-become-pass');
             
-            process.stdin.pipe(child.stdin)
+            // process.stdin.pipe(child.stdin)
             
-            for await (const data of child.stdout) {
-              console.log(`stdout from the child: ${data}`);
-            };
+            // for await (const data of child.stdout) {
+            //   console.log(`stdout from the child: ${data}`);
+            // };
             
             // ansible-playbook sampleplaybook.yml -i ansible_hosts
             // Muss Python installiert sein? Falls ja dringend in die Doku schreiben!
-            resolve(true)
         });
     }
 

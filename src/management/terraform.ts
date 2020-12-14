@@ -156,7 +156,7 @@ export class TerraformManager {
     /**
      * Get IP Address the TF way
      */
-    getIp = () =>{
+    getIp = ():Promise<void> =>{
         return new Promise(async (resolve, reject) => {
 
             const inventory = JSON.parse(await fs.readFile("src/terraform/terraform.tfstate", "utf-8"));
@@ -188,14 +188,14 @@ export class TerraformManager {
                 }
                 index++;
 
-                ansibleInventory = ansibleInventory + singleInstance.ip + `ansible_ssh_user=${singleInstance.name + "-USER"} ansible_ssh_pass=${singleInstance.name + "-PASS"}
+                ansibleInventory = ansibleInventory + singleInstance.ip + `ansible_ssh_user=${"%%"+ singleInstance.name + "-USER%%"} ansible_ssh_pass=${"%%" + singleInstance.name + "-PASS%%"}
                 `;
 
                 if(singleInstance.type != instances[index].type){
                     newGroup = true;
                 }
             }
-            fs.writeFile(ansibleInventory, "utf8");
+            fs.writeFile('src/ansible', ansibleInventory, "utf8");
             resolve();
         })
     }

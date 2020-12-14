@@ -19,25 +19,25 @@ export class Manager {
             config = JSON.parse(config)
             console.log(config.settings.singleFile)
             let templates = [];
-            if (config.settings.singleFile) {
-                //split input file into several definition files (packer, terraform, ansible)
-                // Support for multiple files!
+            // // // // // // if (config.settings.singleFile) {
+            // // // // // //     //split input file into several definition files (packer, terraform, ansible)
+            // // // // // //     // Support for multiple files!
 
-                // let tfDef = fileToRead.split("TF Part")[1];
-                // let packerDef = fileToRead.split("Packer Part")[1];
-                // let ansibleDef = fileToRead.split("Ansible Part")[1];
+            // // // // // //     // let tfDef = fileToRead.split("TF Part")[1];
+            // // // // // //     // let packerDef = fileToRead.split("Packer Part")[1];
+            // // // // // //     // let ansibleDef = fileToRead.split("Ansible Part")[1];
 
-            } else {
+            // // // // // // } else {
 
-                // Es muss einen Weg geben Packer zu deaktivieren, falls man nur mit TF und Ansible arbeiten möchte
+            // // // // // //     // Es muss einen Weg geben Packer zu deaktivieren, falls man nur mit TF und Ansible arbeiten möchte
                 
-                let packer = new PackerManager();
-                templates = await packer.setup(config.packer).catch((err) =>{
-                    console.log(err)
-                    console.log("Check you Packer Definition file and try again")
-                } );
+            // // // // // //     let packer = new PackerManager();
+            // // // // // //     templates = await packer.setup(config.packer).catch((err) =>{
+            // // // // // //         console.log(err)
+            // // // // // //         console.log("Check you Packer Definition file and try again")
+            // // // // // //     } );
 
-            }
+            // // // // // // }
 
             //read config file
             let credentials = config.vsphere;
@@ -57,8 +57,8 @@ export class Manager {
             // Finde ich hoffentlich jetzt gleich raus
 
             // run Terraform 
-            let terraform = new TerraformManager();
-            await terraform.setup(config.terraform, templates);
+            // // // // let terraform = new TerraformManager();
+            // // // // await terraform.setup(config.terraform, templates);
             
             let ansible = new AnsibleManager();
             ansible.setup(config.ansible);
