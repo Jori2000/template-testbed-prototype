@@ -30,10 +30,18 @@
 
     }],
     "terraform": {
-        "vsphere_user": "administrator@vsphere.local",
-        "vsphere_server": "192.168.0.77",
-        "vsphere_password": "waSSer77!",
-        "vsphere_virtual_machine_template": "Ubuntu-1804-Template"
-
+        "vsphere_user":"administrator@vsphere.local",
+        "vsphere_server":"192.168.0.77",
+        "vsphere_password":"waSSer77!",
+        "vsphere_virtual_machine_template":"cloned_virtual_machine",
+        "vsphere_datacenter" : "datacenter1",
+        "vsphere_datastore":"datastore1",
+        "vsphere_resource_pool":"cluster-1/Resources",
+        "vsphere_network":"VM Network",
+        "vsphere_virtual_machine_name":"cloned_machine"
+    },
+    "ansbile":{
+        "onePassForAll":false,
+        "instances":[{"type":"cloned_machine", "ssh_name":"jori", "ssh_pass":"jori"}]
     }
 }

@@ -6,3 +6,4 @@ variables.json
 src/terraform/.terraform/
 terraform.tfstate.backup
 terraform.tfstate
+config.json

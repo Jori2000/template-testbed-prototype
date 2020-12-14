@@ -61,7 +61,8 @@ export class TerraformManager {
              * Erzeugen der Der Output.TF auf Basis der Eingaben
              * 
              */
-            
+            await this.getIp();
+
             // Terraform apply
             console.log("Apply Terraform")
             await this.apply()
@@ -111,7 +112,12 @@ export class TerraformManager {
     apply = () =>{
         return new Promise(async (resolve, reject) => {
             exec(`terraform apply -auto-approve`, {cwd: 'src/terraform'}, (error, stdout, stderr) => {
+
+                //Do not auto approve! -> ask user!
+
                 // Set new variables.json if there is an error -> corrected file
+                console.log('stdout: ' + stdout)
+                console.log('stderr: ' + stderr);
                 if (error !== null) {
                     console.log('exec error: ' + error);
                     reject();
@@ -152,20 +158,45 @@ export class TerraformManager {
      */
     getIp = () =>{
         return new Promise(async (resolve, reject) => {
-            exec(`terraform output ip`, {cwd: 'src/terraform'}, (error, stdout, stderr) => {
-                // Set new variables.json if there is an error -> corrected file
-                if (error !== null) {
-                    console.log('exec error: ' + error);
-                    reject();
-                } else {
-                    if(stdout == ""){
-                        console.log( "✅")
+
+            const inventory = JSON.parse(await fs.readFile("src/terraform/terraform.tfstate", "utf-8"));
+
+            //copy out all names with respective ip addresses
+            let instances = [];
+            for(let resource of inventory.resources){
+                if(resource.mode == "managed" && resource.type == "vsphere_virtual_machine"){
+                    // We need the name/type/ip
+                    let type = resource.name;
+                    for(let singleInstance in resource.instances){
+                        let instObj = JSON.parse(singleInstance);
+                        let name = instObj.attributes.name;
+                        let ip = instObj.attributes.default_ip_address
+                        instances.push({type: type, name: name, ip: ip})
                     }
-                    console.log('stdout: ' + stdout)
-                    console.log('stderr: ' + stderr);
-                    resolve(true);
                 }
-            });
+            }
+
+            //create new ansible inventory
+            let ansibleInventory = "";
+            let index = 0;
+            let newGroup = true;
+            for(let singleInstance of instances){
+                if(index == 0 || newGroup){
+                    ansibleInventory = `[${singleInstance.type}]
+                    `;
+                    newGroup = false;
+                }
+                index++;
+
+                ansibleInventory = ansibleInventory + singleInstance.ip + `ansible_ssh_user=${singleInstance.name + "-USER"} ansible_ssh_pass=${singleInstance.name + "-PASS"}
+                `;
+
+                if(singleInstance.type != instances[index].type){
+                    newGroup = true;
+                }
+            }
+            fs.writeFile(ansibleInventory, "utf8");
+            resolve();
         })
     }
 }

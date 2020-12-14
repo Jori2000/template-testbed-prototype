@@ -5,22 +5,29 @@
       "RAM": "{{user `vm-mem-size`}}",
       "RAM_reserve_all": true,
       "boot_command": [
-        "<enter><wait><f6><wait><esc><wait>",
-        "<bs><bs><bs><bs><bs><bs><bs><bs><bs><bs>",
-        "<bs><bs><bs><bs><bs><bs><bs><bs><bs><bs>",
-        "<bs><bs><bs><bs><bs><bs><bs><bs><bs><bs>",
-        "<bs><bs><bs><bs><bs><bs><bs><bs><bs><bs>",
-        "<bs><bs><bs><bs><bs><bs><bs><bs><bs><bs>",
-        "<bs><bs><bs><bs><bs><bs><bs><bs><bs><bs>",
-        "<bs><bs><bs><bs><bs><bs><bs><bs><bs><bs>",
-        "<bs><bs><bs><bs><bs><bs><bs><bs><bs><bs>",
-        "<bs><bs><bs>",
-        "/install/vmlinuz",
-        " initrd=/install/initrd.gz",
-        " priority=critical",
-        " locale=en_US",
-        " file=/media/preseed.cfg",
-        "<enter>"
+        "<esc><wait>",
+        "<esc><wait>",
+        "<enter><wait>",
+        "/install/vmlinuz<wait>",
+        " auto<wait>",
+        " console-setup/ask_detect=false<wait>",
+        " console-setup/layoutcode=us<wait>",
+        " console-setup/modelcode=pc105<wait>",
+        " debconf/frontend=noninteractive<wait>",
+        " debian-installer=en_US.UTF-8<wait>",
+        " fb=false<wait>",
+        " initrd=/install/initrd.gz<wait>",
+        " kbd-chooser/method=us<wait>",
+        " keyboard-configuration/layout=USA<wait>",
+        " keyboard-configuration/variant=USA<wait>",
+        " locale=en_US.UTF-8<wait>",
+        " netcfg/get_domain=vm<wait>",
+        " netcfg/get_hostname=vagrant<wait>",
+        " grub-installer/bootdev=/dev/sda<wait>",
+        " noapic<wait>",
+        " preseed/url=http://{{ .HTTPIP }}:{{ .HTTPPort }}/{{user `preseed_path`}}<wait>",
+        " -- <wait>",
+        "<enter><wait>"
       ],
       "boot_order": "disk,cdrom",
       "cluster": "{{user `cluster`}}",
@@ -33,9 +40,13 @@
       ],
       "folder": "{{user `folder`}}",
       "guest_os_type": "ubuntu64Guest",
+      "http_directory": "src/packer/Ubuntu-1804/http",
       "insecure_connection": "true",
-      "iso_checksum": "{{user `iso-checksum-type`}}:{{user `iso-checksum`}}",
-      "iso_urls": "{{user `iso-url`}}",
+      "iso_checksum": "sha256:b45165ed3cd437b9ffad02a2aad22a4ddc69162470e2622982889ce5826f6e3d",
+      "iso_urls": [
+        "https://releases.ubuntu.com/20.04/ubuntu-20.04.1-desktop-amd64.iso"
+      ],
+      "name": "Ubuntu2020",
       "network_adapters": [
         {
           "network": "{{user `vcenter-network`}}"
@@ -53,7 +64,7 @@
       "type": "vsphere-iso",
       "username": "{{user `vcenter-username`}}",
       "vcenter_server": "{{user `vcenter-server`}}",
-      "vm_name": "{{user `vm-name`}}"
+      "vm_name": "Ubuntu2020"
     }
   ],
   "provisioners": [
@@ -78,8 +89,9 @@
     "vcenter-server": "192.168.0.77",
     "vcenter-username": "administrator@vsphere.local",
     "vm-cpu-num": "1",
-    "vm-disk-size": "10240",
+    "vm-disk-size": "14240",
     "vm-mem-size": "1024",
-    "vm-name": "Ubuntu-1804-Template1"
+    "vm-name": "Ubuntu2020"
   }
 }
+

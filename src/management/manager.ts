@@ -3,6 +3,7 @@ import { exec } from "child_process"
 import { settings } from "cluster";
 import { PackerManager } from "./packer"
 import { TerraformManager } from "./terraform"
+import { AnsibleManager } from "./ansible";
 
 export class Manager {
     constructor() {
@@ -57,8 +58,10 @@ export class Manager {
 
             // run Terraform 
             let terraform = new TerraformManager();
-            terraform.setup(config.terraform, templates);
-
+            await terraform.setup(config.terraform, templates);
+            
+            let ansible = new AnsibleManager();
+            ansible.setup(config.ansible);
 
             resolve(true);
         })

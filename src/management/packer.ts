@@ -1,6 +1,7 @@
 import fs from "fs/promises";
-import { exec } from "child_process"
+import { exec, spawn } from "child_process"
 import { settings } from "cluster";
+import readline from "readline";
 
 export class PackerManager {
     constructor() {
@@ -74,11 +75,27 @@ export class PackerManager {
 
     validate = (definitonFile: any): Promise<void> => {
         return new Promise(async (resolve, reject) => {
-            exec(`packer validate ./src/packer/${definitonFile}`, (error, stdout, stderr) => {
+            const rl = readline.createInterface({
+                input: process.stdin,
+                output: process.stdout
+            });
+            exec(`packer validate ./src/packer/${definitonFile}`, async (error, stdout, stderr) => {
 
                 // Set new variables.json if there is an error -> corrected file
                 if (error !== null) {
-                    console.log('exec error1: ' + error);
+                    console.log('exec error: ' + error);
+
+                    console.log('stdout: ' + stdout)
+                    console.log('stderr: ' + stderr);
+                    if (stdout.includes("`packer fix`")) {
+
+                        console.log("I should check if the user sets automatically fix packer file to 'true'")
+                        console.log("packer fix")
+                        await this.fix(definitonFile);
+                        resolve();
+                    } else {
+                        reject();
+                    }
                 } else {
                     if (stdout.length == 0) {
                         console.log(definitonFile + "✅")
@@ -96,19 +113,53 @@ export class PackerManager {
 
     build = (definitonFile: any): Promise<void> => {
         return new Promise(async (resolve, reject) => {
-            exec(`packer build ./src/packer/${definitonFile}`, (error, stdout, stderr) => {
+            const ls = spawn(`packer`, [`build`, `./src/packer/${definitonFile}`]);
+            ls.stdout.on('data', (data) => {
+                console.log(`stdout: ${data}`);
+            });
+
+            ls.stderr.on('data', (data) => {
+                console.error(`stderr: ${data}`);
+            });
+
+            ls.on('close', (code) => {
+                console.log(`child process exited with code ${code}`);
+                resolve()
+            });
+            // spawn(`packer build ./src/packer/${definitonFile}`, (error, stdout, stderr) => {
+            //     console.log('stdout: ' + stdout);
+            //     // Set new variables.json if there is an error -> corrected file
+            //     console.log('stderr: ' + stderr);
+            //     if (error !== null) {
+            //         if (stdout.includes("already exists,")) {
+            //             resolve();
+            //         } else {
+            //             console.log('exec error: ' + error);
+            //             reject(error);
+            //         }
+
+            //     } else {
+            //         resolve();
+            //     }
+            // });
+        });
+    }
+
+    fix = (definitonFile: any): Promise<void> => {
+        return new Promise(async (resolve, reject) => {
+            exec(`packer fix ./src/packer/${definitonFile}`, (error, stdout, stderr) => {
                 console.log('stdout: ' + stdout);
                 // Set new variables.json if there is an error -> corrected file
-                console.log('stderr: ' + stderr);
-                if (error !== null) {
-                    if (stdout.includes("already exists,")) {
-                        resolve();
-                    } else {
-                        console.log('exec error: ' + error);
-                        reject(error);
-                    }
 
+                fs.writeFile(`./src/packer/${definitonFile}`, stdout)
+
+                if (error !== null) {
+                    console.log('stderr: ' + stderr);
+                    console.log(error)
+                    reject()
                 } else {
+                    console.log("File was fixed " + "✅")
+
                     resolve();
                 }
             });
